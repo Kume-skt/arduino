@@ -8,11 +8,14 @@ Adafruit_seesaw ss;
 // 接続先(岩井研究室)のSSIDとパスワード
 //const char ssid[] = "CPSLab_WXR_ng";
 //const char pass[] = "6bepa8ideapbu";
-const char ssid[] = "cps-demo";
+//const char ssid[] = "cps-demo";
+//const char pass[] = "2019cpsdemo";
+
+const char ssid[] = "CPSLAB-DEMO";
 const char pass[] = "2019cpsdemo";
 
 static WiFiUDP wifiUdp;
-static const char *kRemoteIpadr = "192.168.13.3";
+static const char *kRemoteIpadr = "192.168.1.9";
 static const int kRmoteUdpPort = 9000; //送信先のポート
 
 static void WiFi_setup()
