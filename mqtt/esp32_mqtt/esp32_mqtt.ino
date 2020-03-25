@@ -9,7 +9,7 @@ const char passwd[] = "evbskis5dtir7";
 // Pub/Sub
 const char* mqttHost = "192.168.1.11"; // MQTTのIPかホスト名
 const int mqttPort = 1883;       // MQTTのポート
-char pubMessage[256];
+char pubMessage[512];
 WiFiClient wifiClient;
 PubSubClient mqttClient(wifiClient);
 
@@ -18,15 +18,14 @@ const char* topic = "kumeta";     // 送信先のトピック名
 ///////////////////////////////////////////////////////////////////
 String buildJson() {
   String json = "";
-  const int capacity = JSON_OBJECT_SIZE(10);
+  const int capacity = JSON_OBJECT_SIZE(20);
   StaticJsonDocument<capacity> doc;
-  DynamicJsonDocument logs(128);
+  DynamicJsonDocument logs(64);
   doc["devices"] = "freeboard";
-  JsonArray data = doc.createNestedArray("payload");
-  logs["humidity"] = "humidity";
-  logs["temperature"] = "tempC";
-  data.add(logs);
+//  data.add(logs);
   serializeJson(doc,json);
+  
+//  serializeJson(doc,Serial);
   return json;
 }
 
@@ -44,7 +43,7 @@ void loop() {
 
   // 送信処理 topic, payloadは適宜
   String jsonStr = buildJson();
-  jsonStr.toCharArray(pubMessage,jsonStr.length());
+  jsonStr.toCharArray(pubMessage,jsonStr.length()+1);
   mqttClient.publish(topic, pubMessage);
   delay(1000);
 
