@@ -1,46 +1,51 @@
 #include <WiFi.h>
-#include <WiFiUDP.h>
+#include <PubSubClient.h>
+#include <ArduinoJson.h>
 #include "Adafruit_seesaw.h"
-
-
+//l2c sensor
 Adafruit_seesaw ss;
+// WiFi
+const char ssid[] = "CPSLab_ngpp";
+const char passwd[] = "evbskis5dtir7";
 
-// 接続先(岩井研究室)のSSIDとパスワード
-//const char ssid[] = "CPSLab_WXR_ng";
-//const char pass[] = "6bepa8ideapbu";
-//const char ssid[] = "cps-demo";
-//const char pass[] = "2019cpsdemo";
+// Pub/Sub
+const char* mqttHost = "192.168.12.29"; // MQTTのIPかホスト名
+const int mqttPort = 1883;       // MQTTのポート
+char pubMessage[512];
+WiFiClient wifiClient;
+PubSubClient mqttClient(wifiClient);
 
-const char ssid[] = "CPSLAB-DEMO";
-const char pass[] = "2019cpsdemo";
+const char* topic = "plant";     // 送信先のトピック名
+char* payload;                   // 送信するデータ
+///////////////////////////////////////////////////////////////////
+String buildJson() {
+  //センサー値取得
+  float tempC = ss.getTemp();
+  uint16_t capread = ss.touchRead(0);
 
-static WiFiUDP wifiUdp;
-static const char *kRemoteIpadr = "192.168.1.9";
-static const int kRmoteUdpPort = 9000; //送信先のポート
+  String json = "";
+  const int capacity = JSON_OBJECT_SIZE(20);
+  StaticJsonDocument<capacity> doc;
+  DynamicJsonDocument logs(64);
+  doc["capread"] = (uint8_t*)&capread;
+  doc["tempC"] = tempC;
 
-static void WiFi_setup()
-{
-  static const int kLocalPort = 7000;  //自身のポート
+  serializeJson(doc, json);
 
-  WiFi.begin(ssid, pass);
-  while ( WiFi.status() != WL_CONNECTED) {
-    delay(500);
-  }
-  wifiUdp.begin(kLocalPort);
-}
-
-static void Serial_setup()
-{
-  Serial.begin(115200);
-  Serial.println(""); // to separate line
+  //  serializeJson(doc,Serial);
+  return json;
 }
 
 void setup() {
-  Serial_setup();
-  WiFi_setup();
+  Serial.begin(115200);
 
-  Serial.println("seesaw Soil Sensor example!");
+  // Connect WiFi
+  connectWiFi();
 
+  // Connect MQTT
+  connectMqtt();
+  /////////////////////////////////////////
+  //l2cセンサー
   if (!ss.begin(0x36)) {
     Serial.println("ERROR! seesaw not found");
     while (1);
@@ -48,23 +53,54 @@ void setup() {
     Serial.print("seesaw started! version: ");
     Serial.println(ss.getVersion(), HEX);
   }
+
 }
 
-void loop()
-{
-  float tempC = ss.getTemp();
-  uint16_t capread = ss.touchRead(0);
+void loop() {
 
-  Serial.print("Temperature: "); Serial.print(tempC); Serial.println("*C");
-  Serial.print("Capacitive: "); Serial.println(capread);
-
-  wifiUdp.beginPacket(kRemoteIpadr, kRmoteUdpPort);
-//  char send_data = '' + capread;
-//  wifiUdp.write((uint8_t*)send_data, 8);
-//  Serial.print("send_data"); Serial.println((int)capread);
-
-  wifiUdp.write((uint8_t*)&capread,5);
-  wifiUdp.endPacket();
-
+  // 送信処理 topic, payloadは適宜
+  String jsonStr = buildJson();
+  jsonStr.toCharArray(pubMessage, jsonStr.length() + 1);
+  mqttClient.publish(topic, pubMessage);
   delay(3000);
+
+  // WiFi
+  if ( WiFi.status() == WL_DISCONNECTED ) {
+    connectWiFi();
+  }
+  // MQTT
+  if ( ! mqttClient.connected() ) {
+    connectMqtt();
+  }
+  mqttClient.loop();
+
 }
+
+/**
+   Connect WiFi
+*/
+void connectWiFi()
+{
+  WiFi.begin(ssid, passwd);
+  Serial.print("WiFi connecting...");
+  while (WiFi.status() != WL_CONNECTED) {
+    Serial.print(".");
+    delay(100);
+  }
+  Serial.print(" connected. ");
+  Serial.println(WiFi.localIP());
+}
+void connectMqtt()
+{
+  mqttClient.setServer(mqttHost, mqttPort);
+  while ( ! mqttClient.connected() ) {
+    Serial.println("Connecting to MQTT...");
+    String clientId = "ESP32-" + String(random(0xffff), HEX);
+    if ( mqttClient.connect(clientId.c_str()) ) {
+      Serial.println("connected");
+    }
+    delay(1000);
+    randomSeed(micros());
+  }
+}
+
