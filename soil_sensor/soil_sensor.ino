@@ -5,17 +5,17 @@
 //l2c sensor
 Adafruit_seesaw ss;
 // WiFi
-const char ssid[] = "CPSLab_ngpp";
-const char passwd[] = "evbskis5dtir7";
+const char ssid[] = "CPSLAB_WLX";
+const char passwd[] = "6bepa8ideapbu";
 
 // Pub/Sub
-const char* mqttHost = "192.168.12.29"; // MQTTのIPかホスト名
+const char* mqttHost = "192.168.12.5"; // MQTTのIPかホスト名
 const int mqttPort = 1883;       // MQTTのポート
 char pubMessage[512];
 WiFiClient wifiClient;
 PubSubClient mqttClient(wifiClient);
 
-const char* topic = "plant";     // 送信先のトピック名
+const char* topic = "kumeta";     // 送信先のトピック名
 char* payload;                   // 送信するデータ
 ///////////////////////////////////////////////////////////////////
 String buildJson() {
@@ -27,7 +27,7 @@ String buildJson() {
   const int capacity = JSON_OBJECT_SIZE(20);
   StaticJsonDocument<capacity> doc;
   DynamicJsonDocument logs(64);
-  doc["capread"] = (uint8_t*)&capread;
+  doc["capread"] = capread;
   doc["tempC"] = tempC;
 
   serializeJson(doc, json);
