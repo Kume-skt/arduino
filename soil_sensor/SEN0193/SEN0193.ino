@@ -6,9 +6,9 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   int val;
-  val = analogRead(A6);
-    Serial.println(convertMoistureToPercent(val));
-//  Serial.println(val);
+  val = analogRead(A0);
+//    Serial.println(convertMoistureToPercent(val));
+  Serial.println(val);
   delay(1000);
 }
 int convertMoistureToPercent(int value){
