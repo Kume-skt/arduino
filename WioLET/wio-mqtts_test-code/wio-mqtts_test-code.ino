@@ -31,10 +31,10 @@ void setup() {
 
   SerialUSB.println("");
   SerialUSB.println("--- START ---------------------------------------------------");
-  
+
   SerialUSB.println("### I/O Initialize.");
   Wio.Init();
-  
+
   SerialUSB.println("### Power supply ON.");
   Wio.PowerSupplyLTE(true);
   delay(500);
@@ -46,10 +46,13 @@ void setup() {
   }
 
   SerialUSB.println("### Connecting to \""APN"\".");
-  if (!Wio.Activate(APN, USERNAME, PASSWORD)) {
+  bool act = !Wio.Activate(APN, USERNAME, PASSWORD);
+  if (act) {
     SerialUSB.println("### ERROR! ###");
+    SerialUSB.println(act);
     return;
   }
+  SerialUSB.println(act);
 
   SerialUSB.println("### Connecting to MQTT server \""MQTT_SERVER_HOST"\"");
   MqttClient.setServer(MQTT_SERVER_HOST, MQTT_SERVER_PORT);
@@ -71,7 +74,7 @@ void loop() {
   SerialUSB.print(data);
   SerialUSB.println("");
   MqttClient.publish(OUT_TOPIC, data);
-  
+
 err:
   unsigned long next = millis();
   while (millis() < next + INTERVAL)
