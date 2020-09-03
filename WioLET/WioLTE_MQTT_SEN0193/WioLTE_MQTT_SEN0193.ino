@@ -38,53 +38,38 @@ void callback(char *topic, byte *payload, unsigned int length)
 
 void setup()
 {
-  delay(200);
-
-  SerialUSB.println("");
-  SerialUSB.println("--- START ---------------------------------------------------");
-
-  SerialUSB.println("### I/O Initialize.");
-  Wio.Init();
-
-  SerialUSB.println("### Power supply ON.");
-  Wio.PowerSupplyLTE(true);
-  Wio.PowerSupplyGrove(true);
-  delay(500);
-
-  SerialUSB.println("### Turn on or reset.");
-  if (!Wio.TurnOnOrReset())
-  {
-    SerialUSB.println("### ERROR! ###");
-    return;
-  }
-
-  SerialUSB.println("### Connecting to \"" APN "\".");
-  if (!Wio.Activate(APN, USERNAME, PASSWORD))
-  {
-    SerialUSB.println("### ERROR! ###");
-    return;
-  }
+  wio_setUP();
   connectMqtt();
   SerialUSB.println("### Setup completed.");
 }
 
 void loop()
 {
+  //  wio_setUP();
+  //  connectMqtt();
+
   String data = buildJson();
-//  sprintf(data, "{\"uptime\":%lu}", millis() / 1000);
 
   SerialUSB.print("Publish:");
   SerialUSB.print(data);
   SerialUSB.println("");
+
   data.toCharArray(pubMessage, data.length() + 1);
   MqttClient.publish(OUT_TOPIC, pubMessage);
-
+  //  wio_down();
+  Wio.Sleep();
 err:
-  unsigned long next = millis();
-  while (millis() < next + INTERVAL)
-  {
-    MqttClient.loop();
-  }
+
+//  delay(INTERVAL);
+    unsigned long next = millis();
+    while (millis() < next + INTERVAL)
+    {
+//      MqttClient.loop();
+    }  
+  Wio.Wakeup();
+  
+//  connectMqtt();
+//  delay(200);
 }
 
 String buildJson()
@@ -122,4 +107,42 @@ void connectMqtt()
     return;
   }
   MqttClient.subscribe(IN_TOPIC);
+}
+
+void wio_setUP()
+{
+  delay(200);
+
+  SerialUSB.println("");
+  SerialUSB.println("--- START ---------------------------------------------------");
+
+  SerialUSB.println("### I/O Initialize.");
+  Wio.Init();
+
+  SerialUSB.println("### Power supply ON.");
+  Wio.PowerSupplyLTE(true);
+  Wio.PowerSupplyGrove(true);
+  delay(500);
+
+  SerialUSB.println("### Turn on or reset.");
+  if (!Wio.TurnOnOrReset())
+  {
+    SerialUSB.println("### ERROR! ###");
+    return;
+  }
+
+  SerialUSB.println("### Connecting to \"" APN "\".");
+  if (!Wio.Activate(APN, USERNAME, PASSWORD))
+  {
+    SerialUSB.println("### ERROR! ###");
+    return;
+  }
+}
+void wio_down()
+{
+  delay(200);
+
+  SerialUSB.println("### Power supply OFF.");
+  Wio.PowerSupplyLTE(false);
+  Wio.PowerSupplyGrove(false);
 }
