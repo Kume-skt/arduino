@@ -6,12 +6,10 @@
 #include <WioRTC.h>
 
 #if defined ARDUINO_ARCH_STM32F4
-#include <SD.h>                    // https://github.com/Seeed-Studio/SD
+#include <SD.h> // https://github.com/Seeed-Studio/SD
 #elif defined ARDUINO_ARCH_STM32
-#include <SDforWioLTE.h>           // https://github.com/SeeedJP/SDforWioLTE
+#include <SDforWioLTE.h> // https://github.com/SeeedJP/SDforWioLTE
 #endif
-
-
 
 #define APN "soracom.io"
 #define USERNAME "sora"
@@ -21,10 +19,10 @@
 #define MQTT_SERVER_PORT (1883)
 
 #define ID "AWS IoT"
-#define OUT_TOPIC "test"
+#define OUT_TOPIC "hirosima/wio"
 #define IN_TOPIC "inTopic"
 
-#define BOOT_INTERVAL   (3600)  // [sec.]
+#define BOOT_INTERVAL (3600) // [sec.]
 
 #define sen0193_A4 (WIOLTE_A4)
 #define sen0193_A5 (WIOLTE_A5)
@@ -39,7 +37,7 @@ WioRTC Rtc;
 WioLTEClient WioClient(&Wio);
 PubSubClient MqttClient;
 
-#define FILE_NAME "test.txt"
+#define FILE_NAME "log.txt"
 File myFile;
 
 void callback(char *topic, byte *payload, unsigned int length)
@@ -56,7 +54,8 @@ void setup()
   connectMqtt();
 
   SerialUSB.println("### Initialize SD card.");
-  if (!SD.begin()) {
+  if (!SD.begin())
+  {
     SerialUSB.println("### ERROR! ###");
     return;
   }
@@ -76,15 +75,18 @@ void loop()
 err:
 
   delay(2000);
+
   SerialUSB.println("Shutdown.");
-  SerialUSB.println(BOOT_INTERVAL);
   Rtc.SetWakeupPeriod(BOOT_INTERVAL);
   Rtc.Shutdown();
-  while (1) {}
+  while (1)
+  {
+  }
 }
 
 String buildJson()
 {
+  // データ作成
   String json = "";
   const int capacity = JSON_OBJECT_SIZE(20);
   StaticJsonDocument<capacity> doc;
@@ -119,13 +121,15 @@ void connectMqtt()
     return;
   }
   delay(1000);
-
 }
 
-void Writ_sd(int a, int b, int c, int d) {
-  SerialUSB.println("### Writing to "FILE_NAME".");
+void Writ_sd(int a, int b, int c, int d)
+{
+  //sdcardに書き込み
+  SerialUSB.println("### Writing to " FILE_NAME ".");
   myFile = SD.open(FILE_NAME, FILE_WRITE);
-  if (!myFile) {
+  if (!myFile)
+  {
     SerialUSB.println("### ERROR! ###");
     return;
   }
@@ -142,27 +146,28 @@ void Writ_sd(int a, int b, int c, int d) {
   myFile.println(d);
   myFile.close();
 }
-void read_sd() {
-  SerialUSB.println("### Reading from "FILE_NAME".");
+
+void read_sd()
+{
+  //sdcard読み込み
+  SerialUSB.println("### Reading from " FILE_NAME ".");
   myFile = SD.open(FILE_NAME);
-  if (!myFile) {
+  if (!myFile)
+  {
     SerialUSB.println("### ERROR! ###");
     return;
   }
-  SerialUSB.println(FILE_NAME":");
-  while (myFile.available()) {
+  SerialUSB.println(FILE_NAME ":");
+  while (myFile.available())
+  {
     SerialUSB.write(myFile.read());
   }
   myFile.close();
 }
 
-
 void wio_setUP()
 {
   delay(200);
-
-  SerialUSB.println("");
-  SerialUSB.println("--- START ---------------------------------------------------");
 
   SerialUSB.println("### I/O Initialize.");
   Wio.Init();

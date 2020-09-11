@@ -1,0 +1,31 @@
+{
+    "env": {
+        "PACKAGES_PATH": "C:/Program Files (x86)/Arduino",
+        "USER_PATH": "C:/Users/tsukasa/Documents/Arduino"
+    },
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                "C:\\Users\\tsukasa\\AppData\\Local\\Arduino15\\packages\\esp32\\tools\\**",
+                "C:\\Users\\tsukasa\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\1.0.4\\**",
+                "${workspaceFolder}"
+            ],
+            "browse": {
+                "path": [
+                    "${workspaceFolder}",
+                    "${env:PACKAGES_PATH}/tools",
+                    "${env:PACKAGES_PATH}/hardware",
+                    "${env:PACKAGES_PATH}/libraries",
+                    "${env:USER_PATH}/libraries"
+                ]
+            },
+            "forcedInclude": [],
+            "intelliSenseMode": "msvc-x64",
+            "compilerPath": "C:/Program Files (x86)/Microsoft Visual Studio/2017/Community/VC/Tools/MSVC/14.16.27023/bin/Hostx64/x64/cl.exe",
+            "cStandard": "c11",
+            "cppStandard": "c++17"
+        }
+    ],
+    "version": 4
+}
