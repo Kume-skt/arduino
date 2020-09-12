@@ -1,8 +1,25 @@
 # arduino
 研究で使用しているセンサーに関するコード
 
-IOT特論で使用したコード<br>
-水質　　：Grove-TDS-Sensor<br>
-水位　　：Grove-Water-Level-Sensor<br>
-土中水分：soil_sensor/SEN0193_Mqtt.ino<br>
-温湿度　：Atom Matrix/mqtt_DHT/
+## 各コード
+* Atom
+* ESP32
+* M5stack
+* WioLTE
+
+
+## Atom
+このマイコンは、非常に小型なので小さく作りたいときはお勧め
+
+## ESP32
+様々なセンサをつけることができる。また、ピンのみで配線は、自身でできるのでかなり自由度の高いと思う
+## M5stack
+画面、SDカード、スピーカー、拡張ボートがあるので単独でシステムを作成できる。
+
+## WioLTE
+外部と３G回線で通信することができる。
+
+___
+
+## 資料
+個人的に閲覧しなおすことが多い資料
