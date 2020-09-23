@@ -39,13 +39,13 @@ void loop()
 {
   M5.update();
   if(M5.BtnA.isPressed()){
-    playMP3("/sound_A.mp3");
+    playMP3("/3h.mp3");
   }
   if(M5.BtnB.isPressed()){
-    playMP3("/sound_B.mp3");
+    playMP3("/3h.mp3");
   }
   if(M5.BtnC.isPressed()){
-    playMP3("/sound_C.mp3");
+    playMP3("/3h.mp3");
   }
   Serial.printf("MP3 done\n");
   delay(10);

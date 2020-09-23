@@ -30,4 +30,6 @@
 
 ## 資料
 
-個人的に閲覧しなおすことが多い資料
+個人的に閲覧しなおすことが多い資料  
+https://lang-ship.com/blog/work/m5stickc-display/  
+https://lang-ship.com/reference/M5StickC/latest/class_t_f_t__e_s_p_i.html
