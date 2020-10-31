@@ -19,10 +19,10 @@
 #define MQTT_SERVER_PORT (1883)
 
 #define ID "AWS IoT"
-#define OUT_TOPIC "hirosima/wio"
+#define OUT_TOPIC "test"
 #define IN_TOPIC "inTopic"
 
-#define BOOT_INTERVAL (3600) // [sec.]
+#define BOOT_INTERVAL (30) // [sec.]
 
 #define sen0193_A4 (WIOLTE_A4)
 #define sen0193_A5 (WIOLTE_A5)
@@ -53,17 +53,13 @@ void setup()
   wio_setUP();
   connectMqtt();
 
-  SerialUSB.println("### Initialize SD card.");
-  if (!SD.begin())
-  {
-    SerialUSB.println("### ERROR! ###");
-    return;
-  }
+//  SerialUSB.println("### Initialize SD card.");
+//  if (!SD.begin())
+//  {
+//    SerialUSB.println("### ERROR! ###");
+//    return;
+//  }
   SerialUSB.println("### Setup completed.");
-}
-
-void loop()
-{
   String data = buildJson();
 
   SerialUSB.print("Publish:");
@@ -79,9 +75,10 @@ err:
   SerialUSB.println("Shutdown.");
   Rtc.SetWakeupPeriod(BOOT_INTERVAL);
   Rtc.Shutdown();
-  while (1)
-  {
-  }
+}
+
+void loop()
+{
 }
 
 String buildJson()
@@ -104,7 +101,7 @@ String buildJson()
   val4 = analogRead(sen0193_A7);
   doc["soil_valueD"] = val4;
 
-  Writ_sd(val1, val2, val3, val4);
+//  Writ_sd(val1, val2, val3, val4);
   serializeJson(doc, json);
 
   return json;

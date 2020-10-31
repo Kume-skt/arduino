@@ -35,12 +35,14 @@ void loop()
     if (str == "IN")
     {
       playMP3("/3h.mp3");
-    }
+    }else if (str == "OUT"){
+      playMP3("/OUT.mp3");
+      }
   }
   if (M5.BtnA.wasReleased()) {
     mode_nfc = "IN";
     M5.Lcd.clear(BLACK);
-    M5.Lcd.drawString("  IN", half_Width, half_Height);
+    M5.Lcd.drawString("IN", half_Width, half_Height);
   } else if (M5.BtnB.wasReleased()) {
   } else if (M5.BtnC.wasReleased()) {
     mode_nfc = "OUT";
