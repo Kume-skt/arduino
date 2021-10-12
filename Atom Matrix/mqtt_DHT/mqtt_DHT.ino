@@ -8,17 +8,17 @@
 #define DHTTYPE DHT22
 DHT dht(DHTPIN, DHTTYPE);
 // WiFi
-const char ssid[] = "Buffalo-G-8F88";
-const char passwd[] = "amr3747pbdxhd";
+const char ssid[] = "CPSLab_ngpp";
+const char passwd[] = "evbskis5dtir7";
 
 // Pub/Sub
-const char* mqttHost = "192.168.11.12"; // MQTTのIPかホスト名
+const char* mqttHost = "192.168.1.7"; // MQTTのIPかホスト名
 const int mqttPort = 1883;       // MQTTのポート
 char pubMessage[512];
 WiFiClient wifiClient;
 PubSubClient mqttClient(wifiClient);
 
-const char* topic = "DHT";     // 送信先のトピック名
+const char* topic = "plant/DHT";     // 送信先のトピック名
     char* payload;                   // 送信するデータ
 ///////////////////////////////////////////////////////////////////
 String buildJson() {
@@ -54,6 +54,9 @@ void loop() {
   // 送信処理 topic, payloadは適宜
   String jsonStr = buildJson();
   jsonStr.toCharArray(pubMessage,jsonStr.length()+1);
+  
+  
+    Serial.println(jsonStr);
   mqttClient.publish(topic, pubMessage);
   delay(1000);
 

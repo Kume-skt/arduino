@@ -16,10 +16,15 @@ PubSubClient mqttClient(wifiClient);
 const char* topic = "test";     // 送信先のトピック名
 char* payload;                   // 送信するデータ
 
+int index0 = 0;
+int index1 = 0;
+
 
 void setup() {
   Serial.begin(115200);
 
+ pinMode(12, OUTPUT);
+ pinMode(13, OUTPUT);
   // Connect WiFi
   connectWiFi();
 
@@ -29,9 +34,9 @@ void setup() {
 
 void loop() {
 
-  if(!mqttClient.connected()) {
+  if (!mqttClient.connected()) {
     if (mqttClient.connect(topic)) {
-      Serial.println("Connected.");    
+      Serial.println("Connected.");
       mqttClient.subscribe(topic, 0);
       Serial.println("Subscribed.");
     }
@@ -90,13 +95,21 @@ void callback(char* topic, byte* payload, unsigned int length) {
   Serial.print("Message arrived [");
   Serial.print(topic);
   Serial.print("] ");
-  for (int i = 0; i < length; i++) {
-    Serial.print((char)payload[i]);
+  if (length >= 3) {
+    index0 = (char)payload[0] - '0';
+    index1 = (char)payload[1] - '0';
+    if ((char)payload[2] - '0' == 0) {
+      digitalWrite(index0 * 10 + index1, HIGH);
+    } else {
+      digitalWrite(index0 * 10 + index1, LOW);
+    }
+    Serial.print(index0 * 10 + index1);
+    Serial.print((char)payload[2]);
   }
   Serial.println();
 }
 
-void errorReport(){
+void errorReport() {
   Serial.print("Failed. Error state = ");
 
   switch (mqttClient.state()) {

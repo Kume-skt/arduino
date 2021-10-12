@@ -7,7 +7,7 @@ const char ssid[] = "CPSLab_ngpp";
 const char passwd[] = "evbskis5dtir7";
 
 // Pub/Sub
-const char* mqttHost = "192.168.1.11"; // MQTTのIPかホスト名
+const char* mqttHost = "192.168.1.51"; // MQTTのIPかホスト名
 const int mqttPort = 1883;       // MQTTのポート
 char pubMessage[512];
 WiFiClient wifiClient;
@@ -89,4 +89,3 @@ void connectMqtt()
     randomSeed(micros());
   }
 }
-
